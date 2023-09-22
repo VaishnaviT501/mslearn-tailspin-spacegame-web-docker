@@ -85,4 +85,25 @@ stages:
         appName: $(WebAppName)
         azureSubscription: 'Resource Manager - Tailspin - Space Game'
         imageName: '$(RegistryName)/$(webRepository):$(build.buildId)'
+    - task: AzureWebApp@1
+      displayName: 'Azure App Service Deploy: website'
+      inputs:
+        azureSubscription: 'Resource Manager - Tailspin - Space Game'
+        appName: '$(WebAppName)'
+        appType: webAppLinux
+        package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/Tailspin.SpaceGame.Web.zip'
+        jobs:
+  - job: BuildDockerImage
+  displayName: 'Build and Push Docker Image'
+  steps:
+  - task: Docker@2
+    inputs:
+      command: 'build'
+      Dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'  # Update this path
+      context: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web'
+     # Update this path
+      imageName: '$(RegistryName)/$(webRepository):$(build.buildId)'
+  # Add other steps like pushing the image to a registry if needed.
+
+
 
